@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Course</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/courses.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Update Course</h1>
+        <form action="{{ url_for('update_course', id=course.id) }}" method="POST">
+            <div class="input-group">
+                <label for="courseCode">Course Code</label>
+                <input type="text" id="courseCode" name="courseCode" value="{{ course.course_code }}" required>
+            </div>
+            <div class="input-group">
+                <label for="courseTitle">Course Title</label>
+                <input type="text" id="courseTitle" name="courseTitle" value="{{ course.course_title }}" required>
+            </div>
+            <div class="input-group">
+                <label for="courseType">Course Type</label>
+                <input type="text" id="courseType" name="courseType" value="{{ course.course_type }}" required>
+            </div>
+            <div class="input-group">
+                <label for="yearLevel">Year Level</label>
+                <input type="text" id="yearLevel" name="yearLevel" value="{{ course.year_level }}" required>
+            </div>
+            <button type="submit" class="btn">Update Course</button>
+        </form>
+    </div>
+</body>
+</html>

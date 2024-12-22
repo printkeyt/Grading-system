@@ -1,0 +1,190 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: url('https://main.psu.edu.ph/wp-content/uploads/2022/06/psuschool.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #fff;
+    position: relative;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+}
+body.dark-mode .login-box {
+    background: #1e1e1e;
+    color: #e0e0e0;
+}
+body.dark-mode .input-group {
+    background: #292929;
+    border: 1px solid #444;
+}
+body.dark-mode .input-group input {
+    color: #e0e0e0;
+}
+body.dark-mode .btn {
+    background: #333;
+    color: #fff;
+}
+body.dark-mode .btn:hover {
+    background: #444;
+}
+body.dark-mode .options a {
+    color: #bbb;
+}
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f9f9f9;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+.dark-mode-toggle:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* Logo Positioning for Left Logo */
+.left-logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+    height: auto;
+    animation: rotateFlip 2s infinite; /* Apply flip animation */
+    transform-style: preserve-3d; 
+}
+
+/* Logo Positioning for Right Logo */
+.right-logo {
+    position: absolute;
+    top: 20px;
+    right: 20px;  /* Position it to the top-right corner */
+    width: 200px;
+    height: auto;
+    animation: rotateFlip 2s infinite; /* Apply flip animation */
+    transform-style: preserve-3d;
+}
+
+/* Keyframes for flip rotation */
+@keyframes rotateFlip {
+    0% {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(180deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+/* Login Container */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Login Box Style */
+.login-box {
+    background: #fff; /* Pure white background */
+    color: #333;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 350px;
+    text-align: center;
+}
+
+/* Header */
+.login-box h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #1e3c72;  /* Blue text color */
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.input-group i {
+    font-size: 1.2rem;
+    color: #2a5298;  /* Blue icon color */
+    margin-right: 10px;
+}
+
+.input-group input {
+    border: none;
+    background: none;
+    flex: 1;
+    font-size: 1rem;
+    padding: 8px;
+    outline: none;
+    color: #333;
+}
+
+/* Button */
+.btn {
+    background: #1108c0; /* Yellow background */
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background: #fbf30c; /* Darker yellow on hover */
+}
+
+/* Options */
+.options {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.options a {
+    color: #2a5298;  /* Blue color for the link */
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.options a:hover {
+    text-decoration: underline;
+}
+
+.footer {
+    margin-top: 30px;
+    font-size: 0.8rem;
+    color: #888;
+}

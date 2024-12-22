@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- The Container for all the boxes -->
+        <div class="box-container">
+            <!-- Add Course Box -->
+            <div class="box">
+                <img src="https://cdn.iconscout.com/icon/premium/png-256-thumb/add-course-2797514-2317961.png" alt="Add Course Logo" class="box-logo">
+                <button class="box-btn" onclick="window.location.href='/add-course'">Add Course</button>
+            </div>
+
+            <!-- View Courses Box -->
+            <div class="box">
+                <img src="https://vectorified.com/images/course-icon-6.png" alt="View Courses Logo" class="box-logo">
+                <button class="box-btn" onclick="window.location.href='/view-courses'">View Courses</button>
+            </div>
+        </div>
+
+        <!-- Add Course Form -->
+        <div class="courses-container" style="display: none;" id="addCourseContainer">
+            <h1>Add New Course</h1>
+            <form action="/add-course" method="POST">
+                <div class="input-group">
+                    <label for="courseName">Course Name</label>
+                    <input type="text" id="courseName" name="courseName" required>
+                </div>
+                <div class="input-group">
+                    <label for="courseCode">Course Code</label>
+                    <input type="text" id="courseCode" name="courseCode" required>
+                </div>
+                <button type="submit" class="box-btn">Add Course</button>
+            </form>
+        </div>
+
+        <!-- View Courses -->
+        <div class="courses-container" style="display: none;" id="viewCoursesContainer">
+            <h1>View Courses</h1>
+            <div class="course-list">
+                <!-- You can loop over courses here (dynamically generated if you have a database) -->
+                <div class="course-item">
+                    <h2>Course Name 1</h2>
+                    <p>Course Code 1</p>
+                </div>
+                <div class="course-item">
+                    <h2>Course Name 2</h2>
+                    <p>Course Code 2</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle visibility of Add Course and View Courses containers
+        function showAddCourse() {
+            document.getElementById('addCourseContainer').style.display = 'block';
+            document.getElementById('viewCoursesContainer').style.display = 'none';
+        }
+
+        function showViewCourses() {
+            document.getElementById('addCourseContainer').style.display = 'none';
+            document.getElementById('viewCoursesContainer').style.display = 'block';
+        }
+
+        // Event listeners to switch between Add Course and View Courses
+        document.querySelector('.add-course-btn').addEventListener('click', showAddCourse);
+        document.querySelector('.view-course-btn').addEventListener('click', showViewCourses);
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        Dashboard
+    </div>
+
+    <div class="dashboard-container">
+        <!-- The Container for all the boxes -->
+        <div class="box-container">
+            <!-- Courses Box -->
+            <div class="box">
+                <img src="https://vectorified.com/images/course-icon-7.png" alt="Courses Logo" class="box-logo">
+                <button class="box-btn" onclick="window.location.href='/courses'">Courses</button>
+            </div>
+
+            <!-- Student Management Box -->
+            <div class="box">
+                <img src="https://www.kindpng.com/picc/m/227-2271076_student-management-system-symbol-hd-png-download.png" alt="Student Management Logo" class="box-logo">
+                <button class="box-btn" onclick="window.location.href='/student-management'">Student Management</button>
+            </div>
+
+            <!-- Student Grades Calculation Box -->
+            <div class="box">
+                <img src="https://png.pngtree.com/element_our/png_detail/20181129/calculator-icon-png_251904.jpg" alt="Student Grades Calculation Logo" class="box-logo">
+                <button class="box-btn" onclick="window.location.href='/compute-grade'">Student Grades Calculation</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

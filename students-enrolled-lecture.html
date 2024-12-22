@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midterm Grade Calculation for Lecture Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg'); /* Background image */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+            overflow: hidden; /* Prevent body overflow */
+        }
+
+        .container {
+            width: 100%;
+            height: 100%; /* Make container take full height */
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to the top */
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: black;
+        }
+
+        .table-wrapper {
+            overflow: auto; /* Allow scrolling if the table overflows */
+            flex-grow: 1; /* Allow table to expand and take available space */
+            margin-bottom: 20px; /* Add space below the table */
+        }
+
+        table {
+            width: 100%; /* Make the table take full width */
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            word-wrap: break-word; /* Prevent long words from breaking the table */
+        }
+
+        th {
+            background-color: black; /* Black background for headers */
+            color: white;
+            font-weight: bold;
+            padding: 12px; /* More padding for headers */
+        }
+
+        td {
+            word-wrap: break-word; /* Allow content to wrap properly in cells */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .grade-input {
+            width: 100%; /* Expand the input fields */
+            padding: 5px;
+            text-align: center;
+        }
+
+        .submit-btn, .final-term-btn {
+            background-color: black; /* Black background for submit buttons */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .submit-btn:hover, .final-term-btn:hover {
+            background-color: #333; /* Darker shade on hover */
+        }
+
+        /* Ensure S I.D is displayed horizontally */
+        th:nth-child(1), td:nth-child(1) {
+            white-space: nowrap;  /* Prevent wrapping of text in S I.D column */
+            text-align: center;   /* Keep S I.D column centered horizontally */
+            vertical-align: middle; /* Ensure it aligns vertically in the middle */
+        }
+
+        /* Ensure the student name spans horizontally and takes full space */
+        td:nth-child(2) {
+            text-align: left;
+            font-weight: bold;
+            white-space: nowrap; /* Prevent line breaks in names */
+            max-width: 200px; /* Adjust the width to avoid excessive stretching */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis if the name overflows */
+        }
+
+        table td input {
+            width: 100%; /* Full width for inputs */
+        }
+
+        td input[type="text"], td input[type="number"] {
+            width: 100%; /* Input fields should expand to fill their column */
+        }
+
+        /* Optional: Use scrollbars for the entire table if too large vertically */
+        .table-wrapper {
+            overflow-x: auto; 
+            max-height: 80vh; /* Make the table fit within the viewport */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Midterm Grade Calculation for Lecture Courses</h1>
+        <form>
+            <input type="hidden" name="courseCode" value="{{ course.course_code }}">
+            <input type="hidden" name="blockName" value="{{ block_name }}">
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Student I.D</th>
+                            <th rowspan="2">Student Name</th>
+                            <th colspan="2">Quiz 1</th>
+                            <th colspan="2">Quiz 2</th>
+                            <th colspan="2">Quiz 3</th>
+                            <th colspan="2">Seatwork 1</th>
+                            <th colspan="2">Seatwork 2</th>
+                            <th colspan="2">Seatwork 3</th>
+                            <th rowspan="2">Attendance</th>
+                            <th rowspan="2">Highest Possible Attendance </th>
+                            <th rowspan="2">Compilation</th>
+                            <th rowspan="2">Compilation HPS</th>
+                            <th rowspan="2">Midterm Exam</th>
+                            <th rowspan="2">Midterm Exam HPS</th> <!-- Added Midterm Exam HPS -->
+                            <th rowspan="2">Midterm Grade</th>
+                        </tr>
+                        <tr>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr data-student-id="{{ student.student_id }}">
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.student_name }}</td>
+                            {% for i in range(3) %}
+                            <td><input type="number" name="quiz_{{ student.id }}_{{ i + 1 }}" class="grade-input quiz-score" required></td>
+                            <td><input type="number" name="quiz_hps_{{ student.id }}_{{ i + 1 }}" class="grade-input quiz-hps" required></td>
+                            {% endfor %}
+                            {% for j in range(3) %}
+                            <td><input type="number" name="seatwork_{{ student.id }}_{{ j + 1 }}" class="grade-input seatwork-score" required></td>
+                            <td><input type="number" name="seatwork_hps_{{ student.id }}_{{ j + 1 }}" class="grade-input seatwork-hps" required></td>
+                            {% endfor %}
+                            <td><input type="number" name="attendance_{{ student.id }}" class="grade-input attendance" required></td>
+                            <td><input type="number" name="present_days_{{ student.id }}" class="grade-input present-days" required></td>
+                            <td><input type="number" name="compilation_{{ student.id }}" class="grade-input compilation" required></td>
+                            <td><input type="number" name="compilation_hps_{{ student.id }}" class="grade-input compilation-hps" required></td>
+                            <td><input type="number" name="midterm_exam_{{ student.id }}" class="grade-input midterm-exam" required></td>
+                            <td><input type="number" name="midterm_exam_hps_{{ student.id }}" class="grade-input midterm-exam-hps" required></td> <!-- Midterm Exam HPS -->
+                            <td><input type="number" name="midterm_grade_{{ student.id }}" class="grade-input midterm-grade" readonly></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        
+        <!-- Added the Proceed to Final Term button -->
+        <a href="{{ url_for('final_term', course_code=course.course_code, block_name=block_name) }}" class="final-term-btn">Proceed to Final Term</a>
+    </div>
+
+    <script>
+        // Function to save data to local storage
+        function saveToLocalStorage() {
+            const rows = document.querySelectorAll('tbody tr');
+            const data = [];
+    
+            rows.forEach((row, index) => {
+                const rowData = {
+                    quizScores: Array.from(row.querySelectorAll('.quiz-score')).map(input => input.value),
+                    quizHPS: Array.from(row.querySelectorAll('.quiz-hps')).map(input => input.value),
+                    seatworkScores: Array.from(row.querySelectorAll('.seatwork-score')).map(input => input.value),
+                    seatworkHPS: Array.from(row.querySelectorAll('.seatwork-hps')).map(input => input.value),
+                    attendance: row.querySelector('.attendance').value,
+                    presentDays: row.querySelector('.present-days').value,
+                    compilation: row.querySelector('.compilation').value,
+                    compilationHPS: row.querySelector('.compilation-hps').value,
+                    midtermExam: row.querySelector('.midterm-exam').value,
+                    midtermExamHPS: row.querySelector('.midterm-exam-hps').value,
+                    midtermGrade: row.querySelector('.midterm-grade').value
+                };
+                data.push(rowData);
+            });
+    
+            localStorage.setItem('gradeData', JSON.stringify(data));
+        }
+    
+        // Function to load data from local storage
+        function loadFromLocalStorage() {
+            const rows = document.querySelectorAll('tbody tr');
+            const data = JSON.parse(localStorage.getItem('gradeData')) || [];
+    
+            data.forEach((rowData, index) => {
+                const row = rows[index];
+                row.querySelectorAll('.quiz-score').forEach((input, idx) => input.value = rowData.quizScores[idx]);
+                row.querySelectorAll('.quiz-hps').forEach((input, idx) => input.value = rowData.quizHPS[idx]);
+                row.querySelectorAll('.seatwork-score').forEach((input, idx) => input.value = rowData.seatworkScores[idx]);
+                row.querySelectorAll('.seatwork-hps').forEach((input, idx) => input.value = rowData.seatworkHPS[idx]);
+                row.querySelector('.attendance').value = rowData.attendance;
+                row.querySelector('.present-days').value = rowData.presentDays;
+                row.querySelector('.compilation').value = rowData.compilation;
+                row.querySelector('.compilation-hps').value = rowData.compilationHPS;
+                row.querySelector('.midterm-exam').value = rowData.midtermExam;
+                row.querySelector('.midterm-exam-hps').value = rowData.midtermExamHPS;
+                row.querySelector('.midterm-grade').value = rowData.midtermGrade;
+            });
+        }
+    
+        // Load data from local storage on page load
+        window.addEventListener('load', loadFromLocalStorage);
+    
+        // Save data to local storage whenever input changes
+        document.addEventListener('input', function () {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const quizScores = Array.from(row.querySelectorAll('.quiz-score')).map(input => parseFloat(input.value) || 0);
+                const quizHPS = Array.from(row.querySelectorAll('.quiz-hps')).map(input => parseFloat(input.value) || 1);
+                const seatworkScores = Array.from(row.querySelectorAll('.seatwork-score')).map(input => parseFloat(input.value) || 0);
+                const seatworkHPS = Array.from(row.querySelectorAll('.seatwork-hps')).map(input => parseFloat(input.value) || 1);
+                const attendance = parseFloat(row.querySelector('.attendance').value) || 0;
+                const presentDays = parseFloat(row.querySelector('.present-days').value) || 1;
+                const compilation = parseFloat(row.querySelector('.compilation').value) || 0;
+                const compilationHPS = parseFloat(row.querySelector('.compilation-hps').value) || 1;
+                const midtermExam = parseFloat(row.querySelector('.midterm-exam').value) || 0;
+                const midtermExamHPS = parseFloat(row.querySelector('.midterm-exam-hps').value) || 1;
+    
+                const quizTotal = quizScores.reduce((sum, score, index) => sum + (score / quizHPS[index]), 0) * (30 / quizScores.length);
+                const seatworkTotal = seatworkScores.reduce((sum, score, index) => sum + (score / seatworkHPS[index]), 0) * (15 / seatworkScores.length);
+                const attendanceWeighted = (attendance / presentDays) * 10;
+                const compilationWeighted = (compilation / compilationHPS) * 5;
+                const midtermExamWeighted = (midtermExam / midtermExamHPS) * 40;
+    
+                let midtermGrade = quizTotal + seatworkTotal + attendanceWeighted + compilationWeighted + midtermExamWeighted;
+    
+                const invalidInput = quizScores.some((score, index) => score > quizHPS[index]) ||
+                                     seatworkScores.some((score, index) => score > seatworkHPS[index]) ||
+                                     attendance > presentDays ||
+                                     compilation > compilationHPS ||
+                                     midtermExam > midtermExamHPS;
+    
+                if (invalidInput) {
+                    midtermGrade = 0.0;
+                    row.querySelector('.midterm-grade').style.color = "red";
+                } else {
+                    row.querySelector('.midterm-grade').style.color = "black";
+                }
+    
+                row.querySelector('.midterm-grade').value = midtermGrade.toFixed(2);
+            });
+    
+            // Save the data to local storage
+            saveToLocalStorage();
+        });
+    </script>
+    
+</body>
+</html>

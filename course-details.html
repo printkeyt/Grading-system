@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.course_title }} Grading System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/courses.css') }}">
+</head>
+<body>
+    <div class="grading-system-container">
+        <h1>{{ course.course_title }} Grading System</h1>
+        
+        <div class="grading-system">
+            {% if course.course_type == 'Lecture' and course.year_level == '1st Year' %}
+                <!-- First Year Lecture Grading System -->
+                <div class="term-grade">
+                    <h2>Midterm Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Midterm Exam (40%)</p>
+                </div>
+                <div class="term-grade">
+                    <h2>Final Term Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Final Exam (40%)</p>
+                </div>
+                <div class="formula">
+                    <h2>Formula for Semestral Grade</h2>
+                    <p>1/3 Midterm Grade + 2/3 Final Tentative Grade = Semestral Grade</p>
+                </div>
+            {% elif course.course_type == 'Lecture' and course.year_level == 'Higher Year' %}
+                <!-- Higher Year Lecture Grading System -->
+                <div class="term-grade">
+                    <h2>Midterm Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Midterm Exam (40%)</p>
+                </div>
+                <div class="term-grade">
+                    <h2>Final Term Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Final Exam (40%)</p>
+                </div>
+                <div class="formula">
+                    <h2>Formula for Semestral Grade</h2>
+                    <p>(Midterm Grade + Final Tentative Grade) / 2 = Semestral Grade</p>
+                </div>
+            {% elif course.course_type == 'Laboratory' and course.year_level == '1st Year' %}
+                <!-- First Year Laboratory Grading System -->
+                <div class="term-grade">
+                    <h2>Midterm Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Midterm Exam (40%)</p>
+                </div>
+                <div class="term-grade">
+                    <h2>Final Term Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Final Exam (40%)</p>
+                </div>
+                <div class="formula">
+                    <h2>Formula for Semestral Grade</h2>
+                    <p>1/3 Midterm Grade + 2/3 Final Tentative Grade = Semestral Grade</p>
+                </div>
+            {% elif course.course_type == 'Laboratory' and course.year_level == 'Higher Year' %}
+                <!-- Higher Year Laboratory Grading System -->
+                <div class="term-grade">
+                    <h2>Midterm Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Midterm Exam (40%)</p>
+                </div>
+                <div class="term-grade">
+                    <h2>Final Term Grade</h2>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Final Exam (40%)</p>
+                </div>
+                <div class="formula">
+                    <h2>Formula for Semestral Grade</h2>
+                    <p>(Midterm Grade + Final Tentative Grade) / 2 = Semestral Grade</p>
+                </div>
+            {% elif course.course_type == 'Lecture/Laboratory' and course.year_level == '1st Year' %}
+                <!-- First Year Lecture/Laboratory Grading System -->
+                <div class="term-grade">
+                    <h2>Midterm Grade</h2>
+                    <h3>Lecture</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Midterm Exam (40%)</p>
+                    <h3>Laboratory</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Midterm Exam (40%)</p>
+                </div>
+                <div class="term-grade">
+                    <h2>Final Term Grade</h2>
+                    <h3>Lecture</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Final Exam (40%)</p>
+                    <h3>Laboratory</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Final Exam (40%)</p>
+                </div>
+                <div class="formula">
+                    <h2>Formula for Semestral Grade</h2>
+                    <p>Lecture Grade (60%) + Laboratory Grade (40%) = Combined Grade</p>
+                    <p>1/3 Midterm Grade + 2/3 Final Tentative Grade = Semestral Grade</p>
+                </div>
+            {% elif course.course_type == 'Lecture/Laboratory' and course.year_level == 'Higher Year' %}
+                <!-- Higher Year Lecture/Laboratory Grading System -->
+                <div class="term-grade">
+                    <h2>Midterm Grade</h2>
+                    <h3>Lecture</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Midterm Exam (40%)</p>
+                    <h3>Laboratory</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Midterm Exam (40%)</p>
+                </div>
+                <div class="term-grade">
+                    <h2>Final Term Grade</h2>
+                    <h3>Lecture</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Performance Task (30%)</p>
+                    <ul>
+                        <li>Seatworks (15%)</li>
+                        <li>Attendance (10%)</li>
+                        <li>Compilation (5%)</li>
+                    </ul>
+                    <p>Final Exam (40%)</p>
+                    <h3>Laboratory</h3>
+                    <p>Quiz (30%)</p>
+                    <p>Laboratory Reports (30%)</p>
+                    <p>Final Exam (40%)</p>
+                </div>
+                <div class="formula">
+                    <h2>Formula for Semestral Grade</h2>
+                    <p>Lecture Grade (60%) + Laboratory Grade (40%) = Combined Grade</p>
+                    <p>(Midterm Grade + Final Tentative Grade) / 2 = Semestral Grade</p>
+                </div>
+            {% else %}
+                <p>Grading system not available for this course type and year level.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

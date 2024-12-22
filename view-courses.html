@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/courses.css') }}">
+</head>
+<body>
+    <div class="view-courses-container">
+        <h1>All Courses</h1>
+        <div class="courses-columns">
+            <!-- Lecture Courses Column -->
+            <div class="column">
+                <h2>Lecture</h2>
+                {% if lecture_courses %}
+                    {% for course in lecture_courses %}
+                        <div class="course-item">
+                            <h3>
+                                <a href="{{ url_for('course_details', course_code=course.course_code) }}">
+                                    {{ course.course_title }} ({{ course.course_code }})
+                                </a>
+                            </h3>
+                            <p>Year Level: {{ course.year_level }}</p>
+                            <form action="{{ url_for('delete_course', id=course.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No lecture courses available.</p>
+                {% endif %}
+            </div>
+
+            <!-- Laboratory Courses Column -->
+            <div class="column">
+                <h2>Laboratory</h2>
+                {% if lab_courses %}
+                    {% for course in lab_courses %}
+                        <div class="course-item">
+                            <h3>
+                                <a href="{{ url_for('course_details', course_code=course.course_code) }}">
+                                    {{ course.course_title }} ({{ course.course_code }})
+                                </a>
+                            </h3>
+                            <p>Year Level: {{ course.year_level }}</p>
+                            <form action="{{ url_for('delete_course', id=course.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No laboratory courses available.</p>
+                {% endif %}
+            </div>
+
+            <!-- Lecture/Laboratory Courses Column -->
+            <div class="column">
+                <h2>Lecture/Laboratory</h2>
+                {% if lecture_lab_courses %}
+                    {% for course in lecture_lab_courses %}
+                        <div class="course-item">
+                            <h3>
+                                <a href="{{ url_for('course_details', course_code=course.course_code) }}">
+                                    {{ course.course_title }} ({{ course.course_code }})
+                                </a>
+                            </h3>
+                            <p>Year Level: {{ course.year_level }}</p>
+                            <form action="{{ url_for('delete_course', id=course.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No lecture/laboratory courses available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

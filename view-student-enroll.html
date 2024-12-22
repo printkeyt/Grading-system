@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student Enrolled</title>
+    <!-- Link to the student-management.css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .course-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .course-box {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            width: 45%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .block-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .block-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px;
+            width: 45%;
+        }
+        .block-link {
+            display: block;
+            text-decoration: none;
+            color: #000;
+            padding: 10px;
+        }
+        .block-link:hover {
+            background-color: #f0f0f0;
+        }
+        .delete-btn {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+        .enrolled-students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .enrolled-students-table th, .enrolled-students-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        .enrolled-students-table th {
+            background-color: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>All Courses with Blocks</h1>
+        
+        <!-- Courses and Blocks Container -->
+        <div class="course-container">
+            {% for course in courses %}
+                <div class="course-box">
+                    <h2>{{ course.course_title }}</h2>
+                    <p><strong>{{ course.course_code }}</strong></p>
+
+                    <div class="block-list">
+                        {% for block in blocks %}
+                            {% if block.course_code == course.course_code %}
+                                <div class="block-item">
+                                    <a href="{{ url_for('view_enrolled_students', course_code=course.course_code, block_name=block.block_name) }}" class="block-link">
+                                        <h3>Block {{ block.block_name }}</h3>
+                                    </a>
+                                    <form action="{{ url_for('delete_block', id=block.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="delete-btn">Delete</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <a href="{{ url_for('dashboard') }}" class="back-btn">Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

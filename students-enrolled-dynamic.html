@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Computation Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+    <style>
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .grade-input {
+            width: 80%;
+            padding: 5px;
+            text-align: center;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .block-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #4CAF50;
+        }
+        .component-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;" id="calculation-title">Midterm Grade Calculation</h1>
+        <h2>Lecture/Laboratory Grade Computation for {{ course_code }} ({{ block_name }})</h2>
+        
+        <!-- Lecture Component -->
+        <div class="component-section">
+            <h3>Lecture Component</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S I.D</th>
+                        <th>S Name</th>
+                        {% for i in range(num_quizzes) %}
+                            <th>Quiz {{ i + 1 }}</th>
+                            <th>Quiz {{ i + 1 }} HPS</th>
+                        {% endfor %}
+                        {% for j in range(num_seatworks) %}
+                            <th>Seatwork {{ j + 1 }}</th>
+                            <th>Seatwork {{ j + 1 }} HPS</th>
+                        {% endfor %}
+                        <th>Attendance</th>
+                        <th>HPPD</th>
+                        <th>Compilation</th>
+                        <th>HPS</th>
+                        <th>Midterm Exam</th>
+                        <th>MTE HPS</th>
+                        <th>Final Exam</th>
+                        <th>FTE HPS</th>
+                        <th>Midterm Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.student_id }}</td>
+                        <td>{{ student.student_name }}</td>
+                        {% for i in range(num_quizzes) %}
+                            <td><input type="number" name="quiz_{{ student.id }}_{{ i + 1 }}" class="grade-input" required></td>
+                            <td><input type="number" name="quiz_hps_{{ i + 1 }}" class="grade-input" required></td>
+                        {% endfor %}
+                        {% for j in range(num_seatworks) %}
+                            <td><input type="number" name="seatwork_{{ student.id }}_{{ j + 1 }}" class="grade-input" required></td>
+                            <td><input type="number" name="seatwork_hps_{{ j + 1 }}" class="grade-input" required></td>
+                        {% endfor %}
+                        <td><input type="number" name="attendance_{{ student.id }}" class="grade-input" required></td>
+                        <td><input type="number" name="hppd" class="grade-input" required></td>
+                        <td><input type="number" name="compilation_{{ student.id }}" class="grade-input" required></td>
+                        <td><input type="number" name="hps" class="grade-input" required></td>
+                        <td><input type="number" name="midterm_exam_{{ student.id }}" class="grade-input" required></td>
+                        <td><input type="number" name="mte_hps" class="grade-input" required></td>
+                        <td><input type="number" name="final_exam_{{ student.id }}" class="grade-input" required></td>
+                        <td><input type="number" name="fte_hps" class="grade-input" required></td>
+                        <td><input type="number" name="midterm_grade_{{ student.id }}" class="grade-input" readonly></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+                <!-- Laboratory Component -->
+                <div class="component-section">
+                    <h3>Laboratory Component</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S I.D</th>
+                                <th>S Name</th>
+                                {% for k in range(num_lab_reports) %}
+                                    <th>Laboratory Report {{ k + 1 }}</th>
+                                    <th>Lab Report {{ k + 1 }} HPS</th>
+                                {% endfor %}
+                                <th>Midterm Exam (MTE)</th>
+                                <th>MTE HPS</th>
+                                <th>Final Term Exam (FTE)</th>
+                                <th>FTE HPS</th>
+                                <th>Attendance</th>
+                                <th>HPPD</th>
+                                <th>Compilation</th>
+                                <th>HPS</th>
+                                <th>Midterm Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>{{ student.student_id }}</td>
+                                <td>{{ student.student_name }}</td>
+                                {% for k in range(num_lab_reports) %}
+                                    <td><input type="number" name="lab_report_{{ student.id }}_{{ k + 1 }}" class="grade-input" required></td>
+                                    <td><input type="number" name="lab_report_hps_{{ k + 1 }}" class="grade-input" required></td>
+                                {% endfor %}
+                                <td><input type="number" name="mte_{{ student.id }}" class="grade-input" required></td>
+                                <td><input type="number" name="mte_hps" class="grade-input" required></td>
+                                <td><input type="number" name="fte_{{ student.id }}" class="grade-input" required></td>
+                                <td><input type="number" name="fte_hps" class="grade-input" required></td>
+                                <td><input type="number" name="attendance_{{ student.id }}" class="grade-input" required></td>
+                                <td><input type="number" name="hppd" class="grade-input" required></td>
+                                <td><input type="number" name="compilation_{{ student.id }}" class="grade-input" required></td>
+                                <td><input type="number" name="hps" class="grade-input" required></td>
+                                <td><input type="number" name="midterm_grade_{{ student.id }}" class="grade-input" readonly></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        
+                <button type="submit" class="submit-btn">Submit Grades</button>
+                <a href="{{ url_for('view-student-enroll') }}" class="block-link">Back to Student Enrollment</a>
+            </div>
+        </body>
+        </html>
+        

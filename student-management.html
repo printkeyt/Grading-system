@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+</head>
+<body>
+    <div class="student-management-container">
+        <h1>Student Management</h1>
+        <div class="btn-container">
+            <div class="box">
+                <img src="https://static.vecteezy.com/system/resources/previews/019/088/700/original/learning-icon-for-your-website-design-logo-app-ui-free-vector.jpg" alt="Create Block Logo" class="logo">
+                <a href="{{ url_for('create_block') }}" class="box-btn">Create Block</a>
+            </div>
+            <div class="box">
+                <img src="https://cdn-icons-png.flaticon.com/512/2247/2247728.png" alt="Enroll Student Logo" class="logo">
+                <a href="{{ url_for('view_blocks') }}" class="box-btn">Enroll Student</a>
+            </div>
+            <div class="box">
+                <img src="https://tse3.mm.bing.net/th?id=OIP.mUSLv5_WZ_K2iwbAhzrA4QHaHX&pid=Api&P=0&h=180" alt="View Students Enrolled Logo" class="logo">
+                <a href="{{ url_for('view_student_enroll') }}" class="box-btn">View Students Enrolled</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

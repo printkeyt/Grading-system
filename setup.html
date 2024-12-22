@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Computation Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+</head>
+<body>
+    <div id="setup-container" class="form-container">
+        <h1>Grade Computation Setup</h1>
+        <form id="setup-form">
+            <label for="num-quizzes">Number of Quizzes:</label>
+            <input type="number" id="num-quizzes" name="num-quizzes" min="1" required>
+            <label for="num-seatworks">Number of Seatworks:</label>
+            <input type="number" id="num-seatworks" name="num-seatworks" min="1" required>
+            <label for="num-lab-reports">Number of Laboratory Reports:</label>
+            <input type="number" id="num-lab-reports" name="num-lab-reports" min="1" required>
+            <button type="button" onclick="generateTable()">Generate Table</button>
+        </form>
+    </div>
+
+    <div id="table-container" class="block-details-container" style="display: none;">
+        <h1 style="text-align: center;" id="calculation-title">Midterm Grade Calculation</h1>
+        <h2>Grade Computation for {{ course.course_title }} ({{ block_name }})</h2>
+
+        <table id="grade-table">
+            <thead id="table-header"></thead>
+            <tbody id="table-body"></tbody>
+        </table>
+
+        <button class="right-arrow-btn" id="toggle-button" onclick="toggleView()">Proceed to Final Grade Calculation
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+        <a href="{{ url_for('compute_grade') }}" class="block-link">Back to Courses and Blocks</a>
+    </div>
+
+    <script>
+        function generateTable() {
+            var numQuizzes = document.getElementById('num-quizzes').value;
+            var numSeatworks = document.getElementById('num-seatworks').value;
+            var numLabReports = document.getElementById('num-lab-reports').value;
+
+            // Clear existing table content
+            document.getElementById('table-header').innerHTML = '';
+            document.getElementById('table-body').innerHTML = '';
+
+            // Create table header
+            var headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th>S I.D</th>
+                <th>S Name</th>
+            `;
+            for (var i = 1; i <= numQuizzes; i++) {
+                headerRow.innerHTML += `<th>Quiz ${i}</th>`;
+            }
+            for (var j = 1; j <= numSeatworks; j++) {
+                headerRow.innerHTML += `<th>Seatwork ${j}</th>`;
+            }
+            for (var k = 1; k <= numLabReports; k++) {
+                headerRow.innerHTML += `<th>Lab Report ${k}</th>`;
+            }
+            headerRow.innerHTML += `
+                <th>Attendance</th>
+                <th>Compilation</th>
+                <th>Midterm Exam</th>
+                <th>Final Exam</th>
+                <th id="grade-column-title">Midterm Grade</th>
+            `;
+            document.getElementById('table-header').appendChild(headerRow);
+
+            // Create table body for dynamic components with one row
+            var bodyRow = document.createElement('tr');
+            bodyRow.innerHTML = `
+                <td>1</td>
+                <td>Student Name</td>
+            `;
+            for (var i = 1; i <= numQuizzes; i++) {
+                bodyRow.innerHTML += `<td><input type="number" name="quiz${i}" class="grade-input"></td>`;
+            }
+            for (var j = 1; j <= numSeatworks; j++) {
+                bodyRow.innerHTML += `<td><input type="number" name="seatwork${j}" class="grade-input"></td>`;
+            }
+            for (var k = 1; k <= numLabReports; k++) {
+                bodyRow.innerHTML += `<td><input type="number" name="lab_report${k}" class="grade-input"></td>`;
+            }
+            bodyRow.innerHTML += `
+                <td><input type="number" name="attendance" class="grade-input"></td>
+                <td><input type="number" name="compilation" class="grade-input"></td>
+                <td><input type="number" name="midterm_exam" class="grade-input"></td>
+                <td><input type="number" name="final_exam" class="grade-input"></td>
+                <td><input type="number" name="midterm_grade" class="grade-input" readonly></td>
+            `;
+            document.getElementById('table-body').appendChild(bodyRow);
+
+            document.getElementById('table-container').style.display = 'block';
+        }
+
+        function toggleView() {
+            var title = document.getElementById('calculation-title');
+            var gradeColumnTitle = document.getElementById('grade-column-title');
+            var gradeInputs = document.querySelectorAll('input[name="midterm_grade"]');
+            var button = document.getElementById('toggle-button');
+
+            if (title.innerText === 'Midterm Grade Calculation') {
+                title.innerText = 'Final Term Calculation';
+                gradeColumnTitle.innerText = 'Final Term Grade';
+                gradeInputs.forEach(function(input) {
+                    input.name = 'final_term_grade';
+                });
+                button.innerHTML = '< Back to Midterm Grade Calculation <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+            } else {
+                title.innerText = 'Midterm Grade Calculation';
+                gradeColumnTitle.innerText = 'Midterm Grade';
+                gradeInputs.forEach(function(input) {
+                    input.name = 'midterm_grade';
+                });
+                button.innerHTML = 'Proceed to Final Grade Calculation <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+            }
+        }
+    </script>
+    <script>
+        // Function to calculate grades dynamically
+        function calculateGrades() {
+            const rows = document.querySelectorAll("tbody tr:not(#hps-row)"); // Exclude HPS row
+            rows.forEach(row => {
+                let totalScore = 0;
+                let totalHPS = 0;
+        
+                // Loop through all score inputs in the row
+                row.querySelectorAll(".score-input").forEach(input => {
+                    const hpsId = input.dataset.hpsId;
+                    const hpsInput = document.getElementById(hpsId);
+        
+                    if (hpsInput && hpsInput.value && input.value) {
+                        const score = parseFloat(input.value);
+                        const hps = parseFloat(hpsInput.value);
+        
+                        if (!isNaN(score) && !isNaN(hps) && hps > 0) {
+                            totalScore += score;
+                            totalHPS += hps;
+                        }
+                    }
+                });
+        
+                // Calculate the percentage grade
+                const gradeInput = row.querySelector(".grade-output");
+                const percentage = (totalScore / totalHPS) * 100 || 0; // Avoid division by zero
+                gradeInput.value = percentage.toFixed(2);
+            });
+        }
+        
+        // Event listeners for changes in HPS and scores
+        document.addEventListener("input", event => {
+            if (event.target.classList.contains("hps-input") || event.target.classList.contains("score-input")) {
+                calculateGrades();
+            }
+        });
+        </script>        
+</body>
+</html>

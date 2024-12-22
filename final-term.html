@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Term Grades</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Final Term Grades</h1>
+        <h3>Course: {{ course_code }}</h3>
+        <h3>Block: {{ block_name }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>S I.D</th>
+                    <th>Student Name</th>
+                    <th>Quiz 1</th>
+                    <th>Quiz 2</th>
+                    <th>Quiz 3</th>
+                    <th>Final Exam</th>
+                    <th>Final Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.student_id }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.quiz1 }}</td>
+                    <td>{{ student.quiz2 }}</td>
+                    <td>{{ student.quiz3 }}</td>
+                    <td>{{ student.final_exam }}</td>
+                    <td>{{ student.final_grade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

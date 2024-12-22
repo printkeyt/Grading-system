@@ -1,0 +1,211 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg'); /* Background image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #333;
+}
+
+.student-management-container, .form-container, .block-details-container, .block-container, .grade-calculation-container {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.9); /* White background for containers */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.course-container, .btn-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Make the layout responsive */
+}
+
+.box, .course-box {
+    background-color: #fff; /* White background for blocks */
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 10px; /* Add some margin for spacing */
+    max-width: 300px;
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.box-btn, .block-link {
+    background-color: white; /* Set button background to white */
+    color: black; /* Set text color to black */
+    padding: 12px 20px;
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    text-decoration: none;
+    text-align: center;
+    transition: none; /* Remove hover effect */
+}
+
+.course-link {
+    text-decoration: none;
+    color: #333;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+}
+
+.course-link h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #0c32bc;
+}
+
+.course-link p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.block-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.block-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.delete-form {
+    margin-left: 10px;
+}
+
+.delete-btn {
+    background-color: rgb(11, 1, 1); /* Red delete button */
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="submit"], button {
+    background-color: black; /* Black background for submit buttons */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.input[type="submit"]:focus, button:focus {
+    outline: 3px solid #0d07b0;
+}
+
+.form-container .btn {
+    margin-top: 20px;
+}
+
+table tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.action-btn {
+    background-color: black; /* Black action button */
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.block-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.block-list ul li {
+    background-color: #f4f4f4;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.grade-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.grade-input:focus {
+    outline: none;
+    border-color: #0c32bc;
+    box-shadow: 0 0 5px rgba(12, 50, 188, 0.5);
+}

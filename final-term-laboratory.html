@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Tentative Grade Calculation for Laboratory Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+    <style>
+        
+        body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg'); /* Background image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #333;
+    overflow: hidden; /* Prevent body overflow */
+}
+
+.container {
+    width: 100%;
+    height: 100%; /* Make container take full height */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.table-wrapper {
+    overflow: auto; /* Allow scrolling if the table overflows */
+    flex-grow: 1; /* Allow table to expand and take available space */
+    margin-bottom: 20px; /* Add space below the table */
+}
+
+table {
+    width: 100%; /* Make the table take full width */
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word; /* Prevent long words from breaking the table */
+}
+
+th {
+    background-color: black; /* Black background for headers */
+    color: white;
+    font-weight: bold;
+    padding: 12px; /* More padding for headers */
+}
+
+td {
+    word-wrap: break-word; /* Allow content to wrap properly in cells */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.grade-input {
+    width: 100%; /* Expand the input fields */
+    padding: 5px;
+    text-align: center;
+}
+
+.submit-btn, .final-term-btn {
+    background-color: black; /* Black background for submit buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-btn:hover, .final-term-btn:hover {
+    background-color: #333; /* Darker shade on hover */
+}
+
+/* Ensure S I.D is displayed horizontally */
+th:nth-child(1), td:nth-child(1) {
+    white-space: nowrap;  /* Prevent wrapping of text in S I.D column */
+    text-align: center;   /* Keep S I.D column centered horizontally */
+    vertical-align: middle; /* Ensure it aligns vertically in the middle */
+}
+
+/* Ensure the student name spans horizontally and takes full space */
+td:nth-child(2) {
+    text-align: left;
+    font-weight: bold;
+    white-space: nowrap; /* Prevent line breaks in names */
+    max-width: 200px; /* Adjust the width to avoid excessive stretching */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if the name overflows */
+}
+
+table td input {
+    width: 100%; /* Full width for inputs */
+}
+
+td input[type="text"], td input[type="number"] {
+    width: 100%; /* Input fields should expand to fill their column */
+}
+
+/* Optional: Use scrollbars for the entire table if too large vertically */
+.table-wrapper {
+    overflow-x: auto; 
+    max-height: 80vh; /* Make the table fit within the viewport */
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Title of the page -->
+        <h1 style="text-align: center;">Final Tentative Grade Calculation for Laboratory Courses</h1>
+
+        <!-- Form for submitting the grades -->
+        <form action="{{ url_for('compute_final_grade') }}" method="POST">
+            <input type="hidden" name="courseCode" value="{{ course.course_code }}">
+            <input type="hidden" name="blockName" value="{{ block_name }}">
+
+            <!-- Wrapper for table to allow scrolling on smaller screens -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <!-- Main header row with columns -->
+                        <tr>
+                            <th rowspan="2">Student I.D</th>
+                            <th rowspan="2">Student Name</th>
+                            <th colspan="2">Quiz 1</th>
+                            <th colspan="2">Quiz 2</th>
+                            <th colspan="2">Quiz 3</th>
+                            <th colspan="2">Lab Report 1</th>  <!-- Added Lab Report 1 -->
+                            <th colspan="2">Lab Report 2</th>  <!-- Added Lab Report 2 -->
+                            <th colspan="2">Lab Report 3</th>  <!-- Added Lab Report 3 -->
+                            <th colspan="2">Final Term Exam (FTE)</th>
+                            <th rowspan="2">Final Tentative Grade</th>
+                        </tr>
+                        <tr>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>  <!-- Lab Report 1 Score -->
+                            <th>HPS</th>    <!-- Lab Report 1 HPS -->
+                            <th>Score</th>  <!-- Lab Report 2 Score -->
+                            <th>HPS</th>    <!-- Lab Report 2 HPS -->
+                            <th>Score</th>  <!-- Lab Report 3 Score -->
+                            <th>HPS</th>    <!-- Lab Report 3 HPS -->
+                            <th>Exam Score</th>
+                            <th>FTE HPS</th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the students -->
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.student_name }}</td>
+                        
+                            <!-- Loop for quizzes (3 quizzes) -->
+                            {% for i in range(3) %}
+                            <td><input type="number" name="quiz_{{ student.id }}_{{ i + 1 }}" class="grade-input quiz-score" id="quiz_{{ student.id }}_{{ i + 1 }}" required></td>
+                            <td><input type="number" name="quiz_hps_{{ i + 1 }}" class="grade-input quiz-hps" id="quiz_hps_{{ i + 1 }}" required></td>
+                            {% endfor %}
+                        
+                            <!-- Lab Reports -->
+                            <td><input type="number" name="lab_report_1_{{ student.id }}" class="grade-input lab-report-1-score" id="lab_report_1_{{ student.id }}" required></td>
+                            <td><input type="number" name="lab_report_1_hps_{{ student.id }}" class="grade-input lab-report-1-hps" id="lab_report_1_hps_{{ student.id }}" required></td>
+                            <td><input type="number" name="lab_report_2_{{ student.id }}" class="grade-input lab-report-2-score" id="lab_report_2_{{ student.id }}" required></td>
+                            <td><input type="number" name="lab_report_2_hps_{{ student.id }}" class="grade-input lab-report-2-hps" id="lab_report_2_hps_{{ student.id }}" required></td>
+                            <td><input type="number" name="lab_report_3_{{ student.id }}" class="grade-input lab-report-3-score" id="lab_report_3_{{ student.id }}" required></td>
+                            <td><input type="number" name="lab_report_3_hps_{{ student.id }}" class="grade-input lab-report-3-hps" id="lab_report_3_hps" required></td>
+                        
+                            <!-- Final Term Exam (FTE) -->
+                            <td><input type="number" name="final_exam_{{ student.id }}" class="grade-input midterm-exam" id="final_exam_{{ student.id }}" required></td>
+                            <td><input type="number" name="fte_hps" class="grade-input mte-hps" id="fte_hps" required></td>
+                        
+                            <!-- Final Tentative Grade (readonly input) -->
+                            <td><input type="number" name="final_tentative_grade_{{ student.id }}" class="grade-input midterm-grade" id="final_tentative_grade_{{ student.id }}" readonly></td>
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{{ url_for('semestral_grade', course_code=course.course_code, block_name=block_name) }}" class="proceed-btn">Proceed to Semestral Grade Calculation</a>
+        </div>
+        </form>
+    </div>
+
+    <script>
+    // Save to localStorage whenever any input changes
+    document.addEventListener('input', function () {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const studentId = row.querySelector('td').innerText;
+
+            // Store quiz scores and HPS values
+            Array.from(row.querySelectorAll('.quiz-score')).forEach((input, index) => {
+                localStorage.setItem(`quiz_${studentId}_${index + 1}`, input.value);
+            });
+            Array.from(row.querySelectorAll('.quiz-hps')).forEach((input, index) => {
+                localStorage.setItem(`quiz_hps_${studentId}_${index + 1}`, input.value);
+            });
+
+            // Store lab report 1, 2, and 3 and their HPS values
+            localStorage.setItem(`lab_report_1_${studentId}`, row.querySelector('.lab-report-1-score').value);
+            localStorage.setItem(`lab_report_1_hps_${studentId}`, row.querySelector('.lab-report-1-hps').value);
+            localStorage.setItem(`lab_report_2_${studentId}`, row.querySelector('.lab-report-2-score').value);
+            localStorage.setItem(`lab_report_2_hps_${studentId}`, row.querySelector('.lab-report-2-hps').value);
+            localStorage.setItem(`lab_report_3_${studentId}`, row.querySelector('.lab-report-3-score').value);
+            localStorage.setItem(`lab_report_3_hps_${studentId}`, row.querySelector('.lab-report-3-hps').value);
+
+            // Store final exam and HPS values
+            localStorage.setItem(`final_exam_${studentId}`, row.querySelector('.midterm-exam').value);
+            localStorage.setItem(`fte_hps_${studentId}`, row.querySelector('.mte-hps').value);
+        });
+
+        calculateGrades(); // Recalculate grades after input
+    });
+
+    // Load values from localStorage when the page loads
+    window.addEventListener('load', () => {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const studentId = row.querySelector('td').innerText;
+
+            // Load quiz scores and HPS values from localStorage
+            Array.from(row.querySelectorAll('.quiz-score')).forEach((input, index) => {
+                input.value = localStorage.getItem(`quiz_${studentId}_${index + 1}`) || '';
+            });
+            Array.from(row.querySelectorAll('.quiz-hps')).forEach((input, index) => {
+                input.value = localStorage.getItem(`quiz_hps_${studentId}_${index + 1}`) || '';
+            });
+
+            // Load lab report 1, 2, and 3 and their HPS values
+            row.querySelector('.lab-report-1-score').value = localStorage.getItem(`lab_report_1_${studentId}`) || '';
+            row.querySelector('.lab-report-1-hps').value = localStorage.getItem(`lab_report_1_hps_${studentId}`) || '';
+            row.querySelector('.lab-report-2-score').value = localStorage.getItem(`lab_report_2_${studentId}`) || '';
+            row.querySelector('.lab-report-2-hps').value = localStorage.getItem(`lab_report_2_hps_${studentId}`) || '';
+            row.querySelector('.lab-report-3-score').value = localStorage.getItem(`lab_report_3_${studentId}`) || '';
+            row.querySelector('.lab-report-3-hps').value = localStorage.getItem(`lab_report_3_hps_${studentId}`) || '';
+
+            // Load final exam and HPS values
+            row.querySelector('.midterm-exam').value = localStorage.getItem(`final_exam_${studentId}`) || '';
+            row.querySelector('.mte-hps').value = localStorage.getItem(`fte_hps_${studentId}`) || '';
+        });
+
+        calculateGrades(); // Recalculate grades after loading
+    });
+
+    // Function to calculate and update grades in real-time
+    function calculateGrades() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const quizScores = Array.from(row.querySelectorAll('.quiz-score')).map(input => parseFloat(input.value) || 0);
+            const quizHPS = Array.from(row.querySelectorAll('.quiz-hps')).map(input => parseFloat(input.value) || 1);
+
+            // Get lab report scores and HPS for the 3 lab reports
+            const labReport1Score = parseFloat(row.querySelector('.lab-report-1-score').value) || 0;
+            const labReport1HPS = parseFloat(row.querySelector('.lab-report-1-hps').value) || 1;
+            const labReport2Score = parseFloat(row.querySelector('.lab-report-2-score').value) || 0;
+            const labReport2HPS = parseFloat(row.querySelector('.lab-report-2-hps').value) || 1;
+            const labReport3Score = parseFloat(row.querySelector('.lab-report-3-score').value) || 0;
+            const labReport3HPS = parseFloat(row.querySelector('.lab-report-3-hps').value) || 1;
+
+            const midtermExam = parseFloat(row.querySelector('.midterm-exam').value) || 0;
+            const mteHPS = parseFloat(row.querySelector('.mte-hps').value) || 1;
+
+            // Validate that the score is not higher than the HPS
+            let invalidInput = false;
+            const allScores = [...quizScores, labReport1Score, labReport2Score, labReport3Score, midtermExam];
+            const allHPS = [...quizHPS, labReport1HPS, labReport2HPS, labReport3HPS, mteHPS];
+
+            allScores.forEach((score, index) => {
+                if (score > allHPS[index]) {
+                    invalidInput = true;
+                }
+            });
+
+            if (invalidInput) {
+                row.querySelector('.midterm-grade').value = "0.0";
+                row.querySelector('.midterm-grade').style.color = "red"; // Optional: Add red text for emphasis
+                return;
+            }
+
+            // Calculate weighted scores for Quiz and Lab Reports
+            const quizTotal = quizScores.reduce((sum, score, index) => sum + (score / quizHPS[index]), 0) * 100 / quizScores.length;
+
+            // Calculate weighted scores for each lab report (each report will count as 10%)
+            const labReport1Total = (labReport1Score / labReport1HPS) * 100;
+            const labReport2Total = (labReport2Score / labReport2HPS) * 100;
+            const labReport3Total = (labReport3Score / labReport3HPS) * 100;
+
+            // Lab reports will each contribute 10% of the total grade, so divide the score by 3 for the total of 30%
+            const labReportWeighted = (labReport1Total + labReport2Total + labReport3Total) * 0.10;
+
+            // Calculate the final grade based on your rubric
+            const quizWeighted = quizTotal * 0.30;
+            const midtermExamWeighted = (midtermExam / mteHPS) * 40; // 40% weight for the midterm exam
+
+            // Calculate the total midterm grade
+            let midtermGrade = quizWeighted + labReportWeighted + midtermExamWeighted;
+
+            // Ensure the midterm grade doesn't exceed 100
+            if (midtermGrade > 100) {
+                midtermGrade = 100;
+            }
+
+            // Display the calculated midterm grade
+            row.querySelector('.midterm-grade').value = midtermGrade.toFixed(2);
+        });
+    }
+</script>
+
+</body>
+</html>

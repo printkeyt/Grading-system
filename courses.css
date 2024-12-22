@@ -1,0 +1,328 @@
+/* General Body Styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff; /* White background */
+    color: #000000; /* Black text color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Container for the courses page */
+.courses-container {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.05); /* Light gray background */
+    border-radius: 10px;
+}
+
+/* Header Style */
+h1 {
+    font-size: 2rem;
+    color: #000000;  /* Black text color */
+    margin-bottom: 20px;
+}
+
+/* The container for the two buttons (Add and View Courses) */
+.box-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+}
+
+/* Individual button boxes for Add Course and View Courses */
+.box {
+    background-color: rgba(0, 0, 0, 0.05);  /* Light gray background */
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect for the box */
+.box:hover {
+    transform: translateY(-5px);
+}
+
+/* Logo inside each box */
+.box-logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+}
+
+/* Button styling inside each box */
+.box-btn {
+    background-color: #000000;  /* Black button background */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.box-btn:hover {
+    background-color: #333333;  /* Lighter gray on hover */
+}
+
+/* Focus style for buttons */
+.box-btn:focus {
+    outline: 3px solid #000000;
+}
+
+/* Styles for the input fields on the Add Course form */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group input {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+/* Hover effect for input fields */
+.input-group input:hover {
+    border-color: #000000;  /* Black border on hover */
+}
+
+/* Styles for the Add Course form itself */
+.courses-container form {
+    background-color: rgba(0, 0, 0, 0.05);  /* Light gray background */
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* View Courses list styling */
+.course-list {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.course-item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for each course name and code */
+.course-item h2 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #000000;
+}
+
+.course-item p {
+    font-size: 1rem;
+    color: #666666;  /* Light gray text */
+}
+
+/* Add Course Page Styles */
+.add-course-container {
+    background-color: #ffffff;  /* White background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #000000;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 1rem;
+    color: #000000;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+/* Styling for Course Type Buttons (Lecture, Laboratory, Lecture/Laboratory) */
+.course-type-buttons,
+.year-level-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Add spacing between buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+}
+
+.course-type-btn,
+.year-btn {
+    background-color: #000000;  /* Black background */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    width: 30%;
+    text-align: center;
+}
+
+.course-type-btn:hover,
+.year-btn:hover {
+    background-color: #333333;  /* Lighter gray on hover */
+}
+
+/* Focus style for course type and year level buttons */
+.course-type-btn:focus,
+.year-btn:focus {
+    outline: 3px solid #000000;
+}
+
+/* Styling for the submit button */
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #000000;  /* Black button background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #333333;  /* Lighter gray on hover */
+}
+
+.submit-btn:focus {
+    outline: 3px solid #000000;
+}
+
+/* Styles for the course columns in View Courses */
+.courses-columns {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.column {
+    background-color: #ffffff;  /* White background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    text-align: left;
+    margin-bottom: 20px; /* Add spacing between columns */
+}
+
+.column h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #000000;
+}
+
+.course-item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Grading System Styles */
+.grading-system-container {
+    background-color: #ffffff;  /* White background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.grading-system {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.term-grade {
+    background-color: #f9f9f9; /* Light gray background */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 45%;
+}
+
+.term-grade h2 {
+    margin-bottom: 10px;
+    color: #000000;
+}
+
+.term-grade p, .term-grade ul {
+    text-align: left;
+}
+
+.term-grade ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.formula {
+    background-color: #f9f9f9; /* Light gray background */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.formula h2 {
+    margin-bottom: 10px;
+    color: #000000;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .box-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}

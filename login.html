@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Styles for the dark mode toggle icon */
+        #darkModeToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #darkModeToggle i {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        /* Dark mode styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo at the top left -->
+    <img src="https://career.psu.edu.ph/assets/img/logo.png" alt="Logo" class="logo left-logo">
+    
+    <!-- Logo at the top right -->
+    <img src="https://urdaneta.psu.edu.ph/wp-content/uploads/2022/07/ICpEP.SE-PSU-UC-logo.png" alt="Logo" class="logo right-logo">
+
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form action="{{ url_for('login_post') }}" method="POST" id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="options">
+                    <a href="forgot-password.html">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dark Mode Toggle Icon -->
+    <button id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <script>
+        // Handle form submission
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent form from submitting the default way
+
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (username === "admin" && password === "admin123") {
+                window.location.href = "/dashboard";  
+            } else {
+                alert("Incorrect username or password!");
+            }
+        });
+
+        // Dark Mode Toggle Functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = darkModeToggle.querySelector('i');
+
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+</head>
+<body>
+    <div class="block-details-container">
+        <h1>Course: {{ course.course_code }}: {{ course.course_title }}</h1>
+        <h2>Block: {{ block_name }}</h2>
+
+        <!-- Display error message if the block is full -->
+        {% if error_message %}
+            <div class="alert alert-danger">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <!-- Student addition form -->
+        <form action="{{ url_for('block_details', course_code=course.course_code, block_name=block_name) }}" method="POST">
+            <div class="input-group">
+                <label for="studentId">Student I.D:</label>
+                <input type="text" id="studentId" name="studentId" required>
+            </div>
+            <div class="input-group">
+                <label for="studentName">Student Name:</label>
+                <input type="text" id="studentName" name="studentName" required>
+            </div>
+            <button type="submit" class="btn">Add Student in This Block</button>
+        </form>
+
+        <!-- Table to display list of students -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Student I.D</th>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.student_id }}</td>
+                    <td>{{ student.student_name }}</td>
+                    <td>{{ student.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

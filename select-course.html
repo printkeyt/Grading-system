@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Course</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Select Course for Block {{ block_name }}</h1>
+        <div class="course-container">
+            {% for course in courses %}
+                <div class="course-box">
+                    <form action="{{ url_for('select_course', block_name=block_name) }}" method="POST">
+                        <input type="hidden" name="courseCode" value="{{ course.course_code }}">
+                        <button type="submit" class="course-link">
+                            <h2>{{ course.course_code }}</h2>
+                            <p>{{ course.course_title }}</p>
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semestral Grade Calculation - Laboratory</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #333;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: black;
+    }
+
+    .year-level-selector {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .year-level-selector label {
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      padding: 12px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    .grade-input {
+      width: 100%;
+      padding: 5px;
+      text-align: center;
+    }
+
+    .submit-btn {
+      background-color: black;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .submit-btn:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Radio buttons to select Year Level -->
+    <div class="year-level-selector">
+      <label>Select Year Level:</label>
+      <label>
+        <input type="radio" name="year-level" value="first"> First Year Calculation
+      </label>
+      <label>
+        <input type="radio" name="year-level" value="higher" checked> Higher Year Calculation
+      </label>
+    </div>
+
+    <h1>Semestral Grade Calculation for Laboratory - Block {{ block_name }}</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Student Name</th>
+          <th>Midterm Grade</th>
+          <th>Final Tentative Grade</th>
+          <th>Semestral Grade</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="grades-table">
+        {% for student in students %}
+        <tr data-year-level="higher"> <!-- Default year level is higher -->
+          <td><input type="text" value="{{ student.student_id }}" readonly></td>
+          <td><input type="text" value="{{ student.student_name }}" readonly></td>
+          <td><input type="number" min="0" max="100" class="midterm-grade" placeholder="Midterm"></td>
+          <td><input type="number" min="0" max="100" class="final-grade" placeholder="Final"></td>
+          <td class="semestral-grade">-</td>
+          <td class="status">-</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    let yearLevel = localStorage.getItem("yearLevel") || 'higher'; // Default to 'higher'
+
+    // Set the selected radio button based on the saved value
+    document.querySelectorAll('input[name="year-level"]').forEach(radio => {
+      if (radio.value === yearLevel) {
+        radio.checked = true;
+      }
+    });
+
+    // Load stored student grades, semestral grades, and status from localStorage
+    function loadGrades() {
+      const storedGrades = JSON.parse(localStorage.getItem('grades-laboratory')) || [];
+      const rows = document.querySelectorAll('#grades-table tr');
+      rows.forEach((row, index) => {
+        const midtermInput = row.querySelector(".midterm-grade");
+        const finalInput = row.querySelector(".final-grade");
+        const semestralGradeCell = row.querySelector(".semestral-grade");
+        const statusCell = row.querySelector(".status");
+
+        // Set saved grades and status if available
+        if (storedGrades[index]) {
+          midtermInput.value = storedGrades[index].midterm || '';
+          finalInput.value = storedGrades[index].final || '';
+          semestralGradeCell.textContent = storedGrades[index].semestralGrade || '-';
+          statusCell.textContent = storedGrades[index].status || '-';
+          if (storedGrades[index].status === 'Passed') {
+            statusCell.className = 'status passed';
+          } else {
+            statusCell.className = 'status failed';
+          }
+        }
+      });
+    }
+
+    // Save grades, semestral grades, and status to localStorage whenever the user changes an input
+    function saveGrades() {
+      const rows = document.querySelectorAll('#grades-table tr');
+      const grades = [];
+      rows.forEach(row => {
+        const midtermInput = row.querySelector(".midterm-grade");
+        const finalInput = row.querySelector(".final-grade");
+        const semestralGradeCell = row.querySelector(".semestral-grade");
+        const statusCell = row.querySelector(".status");
+
+        const semestralGrade = parseFloat(semestralGradeCell.textContent) || 0;
+        const status = statusCell.textContent;
+
+        grades.push({
+          midterm: midtermInput.value,
+          final: finalInput.value,
+          semestralGrade: semestralGrade.toFixed(2),
+          status: status
+        });
+      });
+      localStorage.setItem('grades-laboratory', JSON.stringify(grades)); // Updated to store under 'grades-laboratory'
+    }
+
+    // Event listener for the radio buttons
+    document.querySelectorAll('input[name="year-level"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        yearLevel = this.value;  // Update year level dynamically
+        localStorage.setItem("yearLevel", yearLevel);  // Save to localStorage
+        updateYearLevel();  // Update the year level for each row
+        recalculateGrades();  // Recalculate grades based on the selected year level
+      });
+    });
+
+    // Function to update year level attribute for each row
+    function updateYearLevel() {
+      const rows = document.querySelectorAll('#grades-table tr');
+      rows.forEach(row => {
+        row.setAttribute('data-year-level', yearLevel); // Update the row's data-year-level attribute
+      });
+    }
+
+    // Function to recalculate grades for all rows
+    function recalculateGrades() {
+      const rows = document.querySelectorAll('#grades-table tr');
+      rows.forEach(row => {
+        calculateGrade(row);
+      });
+    }
+
+    // Function to calculate the semestral grade and status
+    function calculateGrade(row) {
+      const midtermInput = row.querySelector(".midterm-grade");
+      const finalInput = row.querySelector(".final-grade");
+      const semestralGradeCell = row.querySelector(".semestral-grade");
+      const statusCell = row.querySelector(".status");
+      const yearLevel = row.getAttribute('data-year-level');  // Get the year level from the row's attribute
+
+      const midterm = parseFloat(midtermInput.value);
+      const final = parseFloat(finalInput.value);
+
+      // Validation: Ensure grades are within the range 0-100
+      if ((midterm >= 0 && midterm <= 100) && (final >= 0 && final <= 100)) {
+        let semestralGrade;
+
+        // Check the year level and apply the correct formula
+        if (yearLevel === 'higher') {
+          // Higher year calculation: (Midterm + Final) / 2
+          semestralGrade = (midterm + final) / 2;
+        } else if (yearLevel === 'first') {
+          // First year calculation: (1/3 * Midterm) + (2/3 * Final)
+          semestralGrade = (midterm * (1 / 3)) + (final * (2 / 3));
+        }
+
+        // Update the semestral grade cell
+        semestralGradeCell.textContent = semestralGrade.toFixed(2);
+
+        // Determine the status
+        if (semestralGrade >= 75) {
+          statusCell.textContent = "Passed";
+          statusCell.className = "status passed";
+        } else {
+          statusCell.textContent = "Failed";
+          statusCell.className = "status failed";
+        }
+      } else {
+        // Reset the cells if input is invalid
+        semestralGradeCell.textContent = "0.00";
+        statusCell.textContent = "Failed";
+        statusCell.className = "status failed";
+      }
+
+      // Save grades, semestral grade, and status
+      saveGrades();
+    }
+
+    // Initial load
+    loadGrades();
+
+    // Event listener for all input changes
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('input', () => {
+        const row = input.closest('tr');
+        calculateGrade(row);  // Recalculate the grade when input is changed
+      });
+    });
+  </script>
+</body>
+</html>

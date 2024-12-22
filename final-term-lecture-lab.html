@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Term Grade Calculation for Lecture/Laboratory Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+    
+    <style>
+        /* Ensure the body has a clean layout */
+         /* Ensure the body has a clean layout */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg'); /* Background image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column; /* Allow content to flow vertically */
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    color: #333;
+    overflow-y: auto; /* Allow vertical scrolling for the entire page */
+}
+
+.container {
+    width: 100%;
+    height: auto; /* Let content determine the height */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+    min-height: 100%; /* Ensure the container takes at least the full height */
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.component-section {
+    width: 100%;
+    margin-bottom: 20px; /* Add space between the lecture and laboratory sections */
+}
+
+/* Apply scroll to the entire page instead of individual tables */
+table {
+    width: 100%; /* Make the table take full width */
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed; /* Ensure columns stay aligned for horizontal scroll */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word; /* Prevent long words from breaking the table */
+}
+
+th {
+    background-color: black; /* Black background for headers */
+    color: white;
+    font-weight: bold;
+    padding: 12px; /* More padding for headers */
+}
+
+td {
+    word-wrap: break-word; /* Allow content to wrap properly in cells */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+/* Ensure S I.D is displayed horizontally */
+th:nth-child(1), td:nth-child(1) {
+    white-space: nowrap;  /* Prevent wrapping of text in S I.D column */
+    text-align: center;   /* Keep S I.D column centered horizontally */
+    vertical-align: middle; /* Ensure it aligns vertically in the middle */
+}
+
+/* Ensure the student name spans horizontally and takes full space */
+td:nth-child(2) {
+    text-align: left;
+    font-weight: bold;
+    white-space: nowrap; /* Prevent line breaks in names */
+    max-width: 200px; /* Adjust the width to avoid excessive stretching */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if the name overflows */
+}
+
+table td input {
+    width: 100%; /* Full width for inputs */
+}
+
+td input[type="text"], td input[type="number"] {
+    width: 100%; /* Input fields should expand to fill their column */
+}
+
+/* Buttons styling */
+.submit-btn, .final-term-btn {
+    background-color: black; /* Black background for submit buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-btn:hover, .final-term-btn:hover {
+    background-color: #333; /* Darker shade on hover */
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">Final Tentative Grade Calculation for Lecture/Laboratory Courses</h1>
+
+        <!-- Lecture Component -->
+        <div class="component-section">
+            <h3>Lecture Component</h3>
+            <form action="{{ url_for('compute_final_grade') }}" method="POST">
+                <input type="hidden" name="courseCode" value="{{ course.course_code }}">
+                <input type="hidden" name="blockName" value="{{ block_name }}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student I.D</th>
+                            <th>Student Name</th>
+                            {% for i in range(3) %}
+                                <th>Quiz {{ i + 1 }}</th>
+                                <th>Quiz {{ i + 1 }} HPS</th>
+                            {% endfor %}
+                            {% for j in range(3) %}
+                                <th>Seatwork {{ j + 1 }}</th>
+                                <th>Seatwork {{ j + 1 }} HPS</th>
+                            {% endfor %}
+                            <th>Attendance</th>
+                            <th>HPPD</th>
+                            <th>Compilation</th>
+                            <th>HPS</th>
+                            <th>Final Term Exam</th>
+                            <th>FTE HPS</th>
+                            <th>Final Tentative Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.student_name }}</td>
+                            {% for i in range(3) %}
+                                <td><input type="number" name="quiz_{{ student.id }}_{{ i + 1 }}" class="grade-input quiz" required></td>
+                                <td><input type="number" name="quiz_hps_{{ i + 1 }}" class="grade-input quiz-hps" required></td>
+                            {% endfor %}
+                            {% for j in range(3) %}
+                                <td><input type="number" name="seatwork_{{ student.id }}_{{ j + 1 }}" class="grade-input seatwork" required></td>
+                                <td><input type="number" name="seatwork_hps_{{ j + 1 }}" class="grade-input seatwork-hps" required></td>
+                            {% endfor %}
+                            <td><input type="number" name="attendance_{{ student.id }}" class="grade-input attendance" required></td>
+                            <td><input type="number" name="hppd" class="grade-input hppd" required></td>
+                            <td><input type="number" name="compilation_{{ student.id }}" class="grade-input compilation" required></td>
+                            <td><input type="number" name="hps" class="grade-input hps" required></td>
+                            <td><input type="number" name="final_exam_{{ student.id }}" class="grade-input final-exam" required></td>
+                            <td><input type="number" name="fte_hps" class="grade-input fte-hps" required></td>
+                            <td><input type="number" name="final_tentative_grade_{{ student.id }}" class="grade-input final-grade" readonly></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+        <!-- Laboratory Component -->
+        <div class="component-section">
+            <h3>Laboratory Component</h3>
+            <form action="{{ url_for('compute_final_grade') }}" method="POST">
+                <input type="hidden" name="courseCode" value="{{ course.course_code }}">
+                <input type="hidden" name="blockName" value="{{ block_name }}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S I.D</th>
+                            <th>S Name</th>
+                            {% for i in range(3) %}
+                                <th>Quiz {{ i + 1 }}</th>
+                                <th>Quiz {{ i + 1 }} HPS</th>
+                            {% endfor %}
+                            <th>Laboratory Report</th>
+                            <th>Lab Report HPS</th>
+                            <th>Final Term Exam (FTE)</th>
+                            <th>FTE HPS</th>
+                            <th>Final Tentative Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.student_name }}</td>
+                            {% for i in range(3) %}
+                                <td><input type="number" name="quiz_{{ student.id }}_{{ i + 1 }}" class="grade-input quiz" required></td>
+                                <td><input type="number" name="quiz_hps_{{ i + 1 }}" class="grade-input quiz-hps" required></td>
+                            {% endfor %}
+                            <td><input type="number" name="lab_report_{{ student.id }}" class="grade-input lab-report" required></td>
+                            <td><input type="number" name="lab_report_hps" class="grade-input lab-report-hps" required></td>
+                            <td><input type="number" name="final_exam_{{ student.id }}" class="grade-input final-exam" required></td>
+                            <td><input type="number" name="fte_hps" class="grade-input fte-hps" required></td>
+                            <td><input type="number" name="final_tentative_grade_{{ student.id }}" class="grade-input final-grade" readonly></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{{ url_for('semestral_grade', course_code=course.course_code, block_name=block_name) }}" class="proceed-btn">Proceed to Semestral Grade Calculation</a>
+            </div>
+            </form>
+        </div>
+
+
+    <script>
+        document.addEventListener('input', function () {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                // Lecture Component Calculations
+                const quizzes = row.querySelectorAll('.quiz');
+                const quizHPS = row.querySelectorAll('.quiz-hps');
+                let totalQuizScore = 0;
+                let totalQuizHPS = 0;
+    
+                quizzes.forEach((quiz, index) => {
+                    totalQuizScore += parseFloat(quiz.value || 0);
+                    totalQuizHPS += parseFloat(quizHPS[index].value || 0);
+                });
+    
+                const quizComponent = totalQuizHPS > 0 ? (totalQuizScore / totalQuizHPS) * 100 * 0.3 : 0;
+    
+                const seatworks = row.querySelectorAll('.seatwork');
+                const seatworkHPS = row.querySelectorAll('.seatwork-hps');
+                let totalSeatworkScore = 0;
+                let totalSeatworkHPS = 0;
+    
+                seatworks.forEach((seatwork, index) => {
+                    totalSeatworkScore += parseFloat(seatwork.value || 0);
+                    totalSeatworkHPS += parseFloat(seatworkHPS[index].value || 0);
+                });
+    
+                const seatworkComponent = totalSeatworkHPS > 0 ? (totalSeatworkScore / totalSeatworkHPS) * 100 * 0.15 : 0;
+    
+                const attendance = parseFloat(row.querySelector('.attendance')?.value || 0);
+                const hppd = parseFloat(row.querySelector('.hppd')?.value || 0);
+                const attendanceComponent = hppd > 0 ? (attendance / hppd) * 100 * 0.1 : 0;
+    
+                const compilation = parseFloat(row.querySelector('.compilation')?.value || 0);
+                const hps = parseFloat(row.querySelector('.hps')?.value || 0);
+                const compilationComponent = hps > 0 ? (compilation / hps) * 100 * 0.05 : 0;
+    
+                const finalExam = parseFloat(row.querySelector('.final-exam')?.value || 0);
+                const finalExamHPS = parseFloat(row.querySelector('.fte-hps')?.value || 0);
+                const finalExamComponent = finalExamHPS > 0 ? (finalExam / finalExamHPS) * 100 * 0.4 : 0;
+    
+                // Laboratory Component Calculations
+                const labReport = parseFloat(row.querySelector('.lab-report')?.value || 0);
+                const labReportHPS = parseFloat(row.querySelector('.lab-report-hps')?.value || 0);
+                const labReportComponent = labReportHPS > 0 ? (labReport / labReportHPS) * 100 * 0.3 : 0;
+    
+                // Validate that the score is not higher than the HPS
+                let invalidInput = false;
+                const allScores = [
+                    ...[...quizzes].map(q => parseFloat(q.value || 0)),
+                    labReport,
+                    finalExam
+                ];
+                const allHPS = [
+                    ...[...quizHPS].map(h => parseFloat(h.value || 0)),
+                    labReportHPS,
+                    finalExamHPS
+                ];
+    
+                allScores.forEach((score, index) => {
+                    if (score > allHPS[index]) {
+                        invalidInput = true;
+                    }
+                });
+    
+                if (invalidInput) {
+                    row.querySelector('.final-grade').value = "0.0";
+                    row.querySelector('.final-grade').style.color = "red"; // Optional: Add red text for emphasis
+                    return;
+                }
+    
+                // Calculate the final grade
+                const finalGrade = quizComponent + seatworkComponent + attendanceComponent + compilationComponent + finalExamComponent + labReportComponent;
+                row.querySelector('.final-grade').value = finalGrade.toFixed(2);
+    
+                // Debugging output
+                console.log("Total Quiz Score: ", totalQuizScore, "Total Quiz HPS: ", totalQuizHPS);
+                console.log("Quiz Component: ", quizComponent);
+                console.log("Total Seatwork Score: ", totalSeatworkScore, "Total Seatwork HPS: ", totalSeatworkHPS);
+                console.log("Seatwork Component: ", seatworkComponent);
+                console.log("Attendance Component: ", attendanceComponent);
+                console.log("Compilation Component: ", compilationComponent);
+                console.log("Final Exam Component: ", finalExamComponent);
+                console.log("Lab Report Component: ", labReportComponent);
+                console.log("Final Grade: ", finalGrade);
+            });
+        });
+    </script>    
+</body>
+</html>

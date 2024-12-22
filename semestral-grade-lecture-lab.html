@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semestral Grade Calculation - Lecture & Laboratory</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #333;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: black;
+    }
+
+    .year-level-selector {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .year-level-selector label {
+      font-size: 16px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .year-level-selector input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    .table-wrapper {
+      overflow: auto;
+      flex-grow: 1;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: black;
+      color: white;
+      font-weight: bold;
+      padding: 12px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    .grade-input {
+      width: 100%;
+      padding: 5px;
+      text-align: center;
+    }
+
+    .submit-btn {
+      background-color: black;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .submit-btn:hover {
+      background-color: #333;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .proceed-btn {
+      background-color: #0a0a0a;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .proceed-btn:hover {
+      background-color: #0b0b0b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Radio buttons to select Year Level -->
+    <div class="year-level-selector">
+      <label>Select Year Level:</label>
+      <label>
+        <input type="radio" name="year-level" value="first"> First Year Calculation
+      </label>
+      <label>
+        <input type="radio" name="year-level" value="higher" checked> Higher Year Calculation
+      </label>
+    </div>
+
+    <h1>Semestral Grade Calculation for Lecture & Laboratory - Block {{ block_name }}</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Student Name</th>
+          <th>Midterm Grade Lecture</th>
+          <th>Midterm Grade Laboratory</th>
+          <th>Final Tentative Grade Lecture</th>
+          <th>Final Tentative Grade Laboratory</th>
+          <th>Semestral Grade</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="grades-table">
+        {% for student in students %}
+        <tr>
+          <!-- Populate student ID -->
+          <td><input type="text" value="{{ student.student_id }}" readonly></td>
+          <!-- Populate student Name -->
+          <td><input type="text" value="{{ student.student_name }}" readonly></td>
+          <!-- Input fields for grades -->
+          <td><input type="number" min="0" max="100" class="midterm-lecture" placeholder="Midterm Lecture"></td>
+          <td><input type="number" min="0" max="100" class="midterm-laboratory" placeholder="Midterm Lab"></td>
+          <td><input type="number" min="0" max="100" class="final-lecture" placeholder="Final Lecture"></td>
+          <td><input type="number" min="0" max="100" class="final-laboratory" placeholder="Final Lab"></td>
+          <td class="semestral-grade">-</td>
+          <td class="status">-</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Function to calculate the semestral grade and status
+    function calculateGrade(row) {
+      const midtermLectureInput = row.querySelector(".midterm-lecture");
+      const midtermLabInput = row.querySelector(".midterm-laboratory");
+      const finalLectureInput = row.querySelector(".final-lecture");
+      const finalLabInput = row.querySelector(".final-laboratory");
+      const semestralGradeCell = row.querySelector(".semestral-grade");
+      const statusCell = row.querySelector(".status");
+  
+      const midtermLecture = parseFloat(midtermLectureInput.value);
+      const midtermLab = parseFloat(midtermLabInput.value);
+      const finalLecture = parseFloat(finalLectureInput.value);
+      const finalLab = parseFloat(finalLabInput.value);
+  
+      // Get the selected year level
+      const yearLevel = document.querySelector('input[name="year-level"]:checked').value;
+  
+      // Validation: Ensure grades are within the range 0-100
+      if ((midtermLecture >= 0 && midtermLecture <= 100) &&
+          (midtermLab >= 0 && midtermLab <= 100) &&
+          (finalLecture >= 0 && finalLecture <= 100) &&
+          (finalLab >= 0 && finalLab <= 100)) {
+  
+        let semestralGrade = 0;
+  
+        // Determine the calculation method based on year level
+        if (yearLevel === "higher") {
+          // Higher Year calculation (60% Lecture + 40% Laboratory)
+          const midtermCombined = (midtermLecture * 0.6) + (midtermLab * 0.4);
+          const finalCombined = (finalLecture * 0.6) + (finalLab * 0.4);
+          semestralGrade = (midtermCombined + finalCombined) / 2;
+        } else {
+          // First Year calculation (1/3 Midterm + 2/3 Final)
+          const midtermCombined = (midtermLecture * 0.6) + (midtermLab * 0.4);
+          const finalCombined = (finalLecture * 0.6) + (finalLab * 0.4);
+          semestralGrade = (midtermCombined * (1 / 3)) + (finalCombined * (2 / 3));
+        }
+  
+        semestralGradeCell.textContent = semestralGrade.toFixed(2);
+  
+        // Determine the status
+        if (semestralGrade >= 75) {
+          statusCell.textContent = "Passed";
+          statusCell.className = "status passed";
+        } else {
+          statusCell.textContent = "Failed";
+          statusCell.className = "status failed";
+        }
+      } else {
+        // Reset the cells if input is invalid
+        semestralGradeCell.textContent = "0.00";
+        statusCell.textContent = "Failed";
+        statusCell.className = "status failed";
+      }
+    }
+  
+    // Save input data and calculated results to localStorage
+    function saveData() {
+      const rows = document.querySelectorAll("#grades-table tr");
+      const data = [];
+      
+      rows.forEach((row) => {
+        const studentID = row.querySelector('td input[type="text"]').value;
+        const midtermLecture = row.querySelector(".midterm-lecture").value;
+        const midtermLab = row.querySelector(".midterm-laboratory").value;
+        const finalLecture = row.querySelector(".final-lecture").value;
+        const finalLab = row.querySelector(".final-laboratory").value;
+        const semestralGrade = row.querySelector(".semestral-grade").textContent;
+        const status = row.querySelector(".status").textContent;
+  
+        data.push({
+          studentID,
+          midtermLecture,
+          midtermLab,
+          finalLecture,
+          finalLab,
+          semestralGrade,
+          status
+        });
+      });
+  
+      localStorage.setItem("studentGrades", JSON.stringify(data));
+    }
+  
+    // Load saved data and calculated results from localStorage
+    function loadData() {
+      const savedData = JSON.parse(localStorage.getItem("studentGrades"));
+      if (savedData) {
+        const rows = document.querySelectorAll("#grades-table tr");
+        savedData.forEach((data, index) => {
+          const row = rows[index];
+          if (row) {
+            row.querySelector(".midterm-lecture").value = data.midtermLecture;
+            row.querySelector(".midterm-laboratory").value = data.midtermLab;
+            row.querySelector(".final-lecture").value = data.finalLecture;
+            row.querySelector(".final-laboratory").value = data.finalLab;
+            row.querySelector(".semestral-grade").textContent = data.semestralGrade;
+            row.querySelector(".status").textContent = data.status;
+          }
+        });
+      }
+    }
+  
+    // Save year-level selection to localStorage
+    function saveYearLevel() {
+      const yearLevel = document.querySelector('input[name="year-level"]:checked').value;
+      localStorage.setItem("yearLevel", yearLevel);
+    }
+  
+    // Load saved year-level selection from localStorage
+    function loadYearLevel() {
+      const savedYearLevel = localStorage.getItem("yearLevel");
+      if (savedYearLevel) {
+        const yearLevelRadio = document.querySelector(`input[name="year-level"][value="${savedYearLevel}"]`);
+        if (yearLevelRadio) {
+          yearLevelRadio.checked = true;
+        }
+      }
+    }
+  
+    // Attach real-time calculation to input fields
+    document.querySelectorAll("#grades-table tr").forEach((row) => {
+      const midtermLectureInput = row.querySelector(".midterm-lecture");
+      const midtermLabInput = row.querySelector(".midterm-laboratory");
+      const finalLectureInput = row.querySelector(".final-lecture");
+      const finalLabInput = row.querySelector(".final-laboratory");
+  
+      // Listen for input events on the grade fields
+      midtermLectureInput.addEventListener("input", () => {
+        calculateGrade(row);
+        saveData(); // Save data when grades are inputted
+      });
+      midtermLabInput.addEventListener("input", () => {
+        calculateGrade(row);
+        saveData(); // Save data when grades are inputted
+      });
+      finalLectureInput.addEventListener("input", () => {
+        calculateGrade(row);
+        saveData(); // Save data when grades are inputted
+      });
+      finalLabInput.addEventListener("input", () => {
+        calculateGrade(row);
+        saveData(); // Save data when grades are inputted
+      });
+    });
+  
+    // Event listener to update the grade calculation when the year level changes
+    document.querySelectorAll('input[name="year-level"]').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        document.querySelectorAll("#grades-table tr").forEach((row) => {
+          calculateGrade(row);
+        });
+        saveYearLevel(); // Save the selected year level
+        saveData(); // Save data when the year level changes
+      });
+    });
+  
+    // Load data, year-level selection, and calculated results when the page loads
+    window.addEventListener("load", () => {
+      loadData();
+      loadYearLevel(); // Load the last selected year level
+    });
+  </script>
+  
+
+</body>
+</html>

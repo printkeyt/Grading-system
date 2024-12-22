@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Add Student to Block {{ block_name }}</h1>
+
+        <!-- Display error message if the block is full -->
+        {% if error_message %}
+            <div class="alert alert-danger">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <!-- Student addition form -->
+        <form action="{{ url_for('block_details', course_code=course_code, block_name=block_name) }}" method="POST">
+            <div class="input-group">
+                <label for="studentId">Student ID</label>
+                <input type="text" id="studentId" name="studentId" required>
+            </div>
+            <div class="input-group">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" name="studentName" required>
+            </div>
+            <button type="submit" class="btn">Add Student</button>
+        </form>
+    </div>
+</body>
+</html>

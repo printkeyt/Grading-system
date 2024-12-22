@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midterm Grade Calculation for Laboratory Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student-management.css') }}">
+    <style>
+       body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    background-image: url('https://cdn.cnn.com/cnnnext/dam/assets/160204163716-digital-dashboard-background-full-169.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    justify-content: flex-start;
+    height: 100vh;
+    color: #333;
+    overflow: hidden; /* Prevent body overflow */
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: black;
+}
+
+.table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    width: 100%;
+    max-height: 80vh; /* Allow the table to scroll vertically if it exceeds 80% of the viewport height */
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+th {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+}
+
+td {
+    word-wrap: break-word;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.grade-input {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+}
+
+.submit-btn, .final-term-btn {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-btn:hover, .final-term-btn:hover {
+    background-color: #333;
+}
+
+th:nth-child(1), td:nth-child(1) {
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+}
+
+td:nth-child(2) {
+    text-align: left;
+    font-weight: bold;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table td input {
+    width: 100%;
+}
+
+td input[type="text"], td input[type="number"] {
+    width: 100%;
+}
+
+/* Allow both vertical and horizontal scrolling */
+.table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 80vh; /* Limit the table height to 80% of the viewport */
+    margin-bottom: 30px; /* Ensure space for the button */
+}
+
+/* Ensure button stays visible at the bottom of the page */
+.final-term-btn {
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">Midterm Grade Calculation for Laboratory Courses</h1>
+        <form id="gradeForm">
+            <input type="hidden" name="courseCode" value="{{ course.course_code }}">
+            <input type="hidden" name="blockName" value="{{ block_name }}">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Student I.D</th>
+                            <th rowspan="2">Student Name</th>
+                            <th colspan="2">Quiz 1</th>
+                            <th colspan="2">Quiz 2</th>
+                            <th colspan="2">Quiz 3</th>
+                            <th colspan="2">Lab Report 1</th>
+                            <th colspan="2">Lab Report 2</th>
+                            <th colspan="2">Lab Report 3</th>
+                            <th rowspan="2">Midterm Exam</th>
+                            <th rowspan="2">Midterm Exam HPS</th>
+                            <th rowspan="2">Midterm Grade</th>
+                        </tr>
+                        <tr>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th>
+                            <th>HPS</th>
+                            <th>Score</th> 
+                            <th>HPS</th>                     
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr data-student-id="{{ student.student_id }}">
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.student_name }}</td>
+                            {% for i in range(3) %}
+                            <td><input type="number" name="quiz_{{ student.id }}_{{ i + 1 }}" class="grade-input quiz-score" required></td>
+                            <td><input type="number" name="quiz_hps_{{ i + 1 }}" class="grade-input quiz-hps" required></td>
+                            {% endfor %}
+                            {% for j in range(3) %}
+                            <td><input type="number" name="lab_report_{{ student.id }}_{{ j + 1 }}" class="grade-input lab-report-score" required></td>
+                            <td><input type="number" name="lab_report_hps_{{ j + 1 }}" class="grade-input lab-report-hps" required></td>
+                            {% endfor %}
+                            <td><input type="number" name="midterm_exam_{{ student.id }}" class="grade-input midterm-exam" required></td>
+                            <td><input type="number" name="mte_hps" class="grade-input mte-hps" required></td>
+                            <td><input type="number" name="midterm_grade_{{ student.id }}" class="grade-input midterm-grade" readonly></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <a href="{{ url_for('final_term', course_code=course.course_code, block_name=block_name) }}" class="final-term-btn">Proceed to Final Term</a>
+    </div>
+    <script>
+        // Save to localStorage whenever any input changes
+        document.addEventListener('input', function () {
+            const rows = document.querySelectorAll('tbody tr');
+    
+            rows.forEach(row => {
+                const studentId = row.querySelector('td').innerText;
+    
+                // Store quiz scores and HPS values
+                Array.from(row.querySelectorAll('.quiz-score')).forEach((input, index) => {
+                    localStorage.setItem(`quiz_${studentId}_${index + 1}`, input.value);
+                });
+                Array.from(row.querySelectorAll('.quiz-hps')).forEach((input, index) => {
+                    localStorage.setItem(`quiz_hps_${studentId}_${index + 1}`, input.value);
+                });
+    
+                // Store lab report scores and HPS values
+                Array.from(row.querySelectorAll('.lab-report-score')).forEach((input, index) => {
+                    localStorage.setItem(`lab_report_${studentId}_${index + 1}`, input.value);
+                });
+                Array.from(row.querySelectorAll('.lab-report-hps')).forEach((input, index) => {
+                    localStorage.setItem(`lab_report_hps_${studentId}_${index + 1}`, input.value);
+                });
+    
+                // Store midterm exam score and HPS value
+                localStorage.setItem(`midterm_exam_${studentId}`, row.querySelector('.midterm-exam').value);
+                localStorage.setItem(`mte_hps_${studentId}`, row.querySelector('.mte-hps').value);
+    
+                calculateGrades(); // Recalculate grades after input
+            });
+        });
+    
+        // Load values from localStorage when the page loads
+        window.addEventListener('load', () => {
+            const rows = document.querySelectorAll('tbody tr');
+    
+            rows.forEach(row => {
+                const studentId = row.querySelector('td').innerText;
+    
+                // Load quiz scores and HPS values from localStorage
+                Array.from(row.querySelectorAll('.quiz-score')).forEach((input, index) => {
+                    input.value = localStorage.getItem(`quiz_${studentId}_${index + 1}`) || '';
+                });
+                Array.from(row.querySelectorAll('.quiz-hps')).forEach((input, index) => {
+                    input.value = localStorage.getItem(`quiz_hps_${studentId}_${index + 1}`) || '';
+                });
+    
+                // Load lab report scores and HPS values from localStorage
+                Array.from(row.querySelectorAll('.lab-report-score')).forEach((input, index) => {
+                    input.value = localStorage.getItem(`lab_report_${studentId}_${index + 1}`) || '';
+                });
+                Array.from(row.querySelectorAll('.lab-report-hps')).forEach((input, index) => {
+                    input.value = localStorage.getItem(`lab_report_hps_${studentId}_${index + 1}`) || '';
+                });
+    
+                // Load midterm exam score and HPS value
+                row.querySelector('.midterm-exam').value = localStorage.getItem(`midterm_exam_${studentId}`) || '';
+                row.querySelector('.mte-hps').value = localStorage.getItem(`mte_hps_${studentId}`) || '';
+    
+                calculateGrades(); // Recalculate grades after loading
+            });
+        });
+    
+        // Function to calculate and update grades in real-time
+        function calculateGrades() {
+            const rows = document.querySelectorAll('tbody tr');
+    
+            rows.forEach(row => {
+                const quizScores = Array.from(row.querySelectorAll('.quiz-score')).map(input => parseFloat(input.value) || 0);
+                const quizHPS = Array.from(row.querySelectorAll('.quiz-hps')).map(input => parseFloat(input.value) || 1);
+                const labReportScores = Array.from(row.querySelectorAll('.lab-report-score')).map(input => parseFloat(input.value) || 0);
+                const labReportHPS = Array.from(row.querySelectorAll('.lab-report-hps')).map(input => parseFloat(input.value) || 1);
+    
+                const midtermExam = parseFloat(row.querySelector('.midterm-exam').value) || 0;
+                const mteHPS = parseFloat(row.querySelector('.mte-hps').value) || 1;
+    
+                // Validate that the score is not higher than the HPS
+                let invalidInput = false;
+                const allScores = [...quizScores, ...labReportScores, midtermExam];
+                const allHPS = [...quizHPS, ...labReportHPS, mteHPS];
+    
+                allScores.forEach((score, index) => {
+                    if (score > allHPS[index]) {
+                        invalidInput = true;
+                    }
+                });
+    
+                if (invalidInput) {
+                    row.querySelector('.midterm-grade').value = "0.0";
+                    row.querySelector('.midterm-grade').style.color = "red"; // Optional: Add red text for emphasis
+                    return;
+                }
+    
+                // Calculate weighted scores for Quiz and Lab Reports
+                const quizTotal = quizScores.reduce((sum, score, index) => sum + (score / quizHPS[index]), 0) * 100 / quizScores.length;
+                const labReportTotal = labReportScores.reduce((sum, score, index) => sum + (score / labReportHPS[index]), 0) * 100 / labReportScores.length;
+    
+                // Calculate the final grade based on your rubric
+                const quizWeighted = quizTotal * 0.30;
+                const labReportWeighted = labReportTotal * 0.30;
+                const midtermExamWeighted = (midtermExam / mteHPS) * 40; // 40% weight for the midterm exam
+    
+                // Calculate the total midterm grade
+                let midtermGrade = quizWeighted + labReportWeighted + midtermExamWeighted;
+    
+                // Ensure the midterm grade doesn't exceed 100
+                if (midtermGrade > 100) {
+                    midtermGrade = 100;
+                }
+    
+                // Display the calculated midterm grade
+                row.querySelector('.midterm-grade').value = midtermGrade.toFixed(2);
+            });
+        }
+    </script>
+    
+</body>
+</html>
